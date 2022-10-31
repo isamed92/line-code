@@ -64,24 +64,36 @@ export const useCode = () => {
                     ]
                 }
             case 'NRZI':
-                let fdata3 = values
-                console.log("🚀 ~ file: useCode.js ~ line 68 ~ getDataGraph ~ fdata3", fdata3)
-                for (let i = 0; i < values.length; i++) {
-                  const siguiente = values[i + 1];
-                  if (values[0] === 1) {
-                    fdata3[0] = -1;
-                  } else {
-                    fdata3[0] = 1;
+                let fdata3 = [...values]
+                if(values[0] === 1)
+                  fdata3[0]= -1;
+                else
+                  fdata3[0]= 1;
+                for (let i = 1; i < values.length; i++) {
+                  if(values[i] === 1){
+                      fdata3[i]= -fdata3[i-1];
                   }
-                  if (values[i] === 1) {
-                    fdata3[i + 1] = siguiente === 1 ? -1 : 1;
-                  } else if (values[i] === 0) {
-                    fdata3[i] = -1;
+                  else{
+                      fdata3[i]= fdata3[i-1];
                   }
                 }
+                console.log(fdata3)
+                  // for (let i = 0; i < values.length; i++) {
+                  // if (values[0] === 1 || i === 0) {
+                  //   fdata3[0] = -1;
+                  // } else {
+                  //   fdata3[0] = 1;
+                  // }
+                  // if (values[i] === 1) {
+                  //   fdata3[i + 1] = (values[i + 1]) === 1 ? -1 : 1;
+                  // } else if (values[i] === 0) {
+                  //   fdata3[i] = -1;
+                  // }
+                  // fdata3[i] = -1
+                  // }
                
                 return {
-                    labels: fdata3.map(() => ''),
+                    labels: values.map(() => ''),
                     datasets: [
                       { label: 'NRZI',
                         data: fdata3,
