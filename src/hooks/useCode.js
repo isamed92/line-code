@@ -12,8 +12,9 @@ const POINT_COLOR_3 = '#4CAF5090'
 const COLOR_4 = '#9C27B0'
 const POINT_COLOR_4 = '#9C27B090'
 
-const COLOR_5 = '#FFEB3B'
-const POINT_COLOR_5 = '#FFEB3B90'
+const COLOR_5 = '#FE9953'
+const POINT_COLOR_5 = '#CB7A4290'
+
 
 
 export const useCode = () => {
@@ -77,20 +78,6 @@ export const useCode = () => {
                       fdata3[i]= fdata3[i-1];
                   }
                 }
-                console.log(fdata3)
-                  // for (let i = 0; i < values.length; i++) {
-                  // if (values[0] === 1 || i === 0) {
-                  //   fdata3[0] = -1;
-                  // } else {
-                  //   fdata3[0] = 1;
-                  // }
-                  // if (values[i] === 1) {
-                  //   fdata3[i + 1] = (values[i + 1]) === 1 ? -1 : 1;
-                  // } else if (values[i] === 0) {
-                  //   fdata3[i] = -1;
-                  // }
-                  // fdata3[i] = -1
-                  // }
                
                 return {
                     labels: values.map(() => ''),
@@ -103,29 +90,82 @@ export const useCode = () => {
                     ]
                 }
             case 'RZ':
-                let fdata4 = values
+                let fdata4 = [...values]
+                let j = 0;
+                for (let i = 0; i < values.length; i++) {
+                  if(values[i] === 1) {
+                    fdata4[j] = 1;
+                  } else {
+                    fdata4[j] = -1;
+                  }
+                  fdata4[j+1] = 0;
+                  j += 2;
+                }
 
                 return {
-                    labels: values.map(() => ''),
+                    labels: fdata4.map(() => ''),
                     datasets: [
-                      { label: 'RZ',
+                      { 
+                        label: 'RZ',
                         data: fdata4,
                         borderColor: COLOR_4,
                         backgroundColor: POINT_COLOR_4,
-                        stepped: true}
+                        stepped: true
+                      },
                     ]
                 }
             case 'Manchester':
+                let fdata5 = [...values]
+                let l = 0;
+                for (let i = 0; i < values.length; i++) {
+                  if(values[i] === 1) {
+                    fdata5[l] = 1;
+                  } else {
+                    fdata5[l] = -1;
+                  }
+                  fdata5[l+1] = -1;
+                  l += 2;
+                }
                 return {
-                    labels: values.map(() => ''),
+                    labels: fdata5.map(() => ''),
                     datasets: [
                       { label: 'Manchester',
-                        data: values,
+                        data: fdata5,
                         borderColor: COLOR_5,
                         backgroundColor: POINT_COLOR_5,
                         stepped: true}
                     ]
                 }
+
+          case 'DManchester':
+            let fdata6 = [...values]
+            let k = 2;
+
+            if (values[0] === 1) {
+                fdata6[0] = 1;
+            } else if (values[0] === 0) {
+                fdata6[0] = -1;
+            }
+            fdata6[1] = fdata6[0] * (-1);
+            for (let i = 1; i < values.length; i++) {
+              if (values[i] === 1) {
+                    fdata6[k] = fdata6[k - 1];
+                } else {
+                    fdata6[k] = fdata6[k - 1]*(-1);
+                }
+                fdata6[++k] = fdata6[k - 1]*(-1);
+                k++;
+            }
+            return {
+                labels: fdata6.map(() => ''),
+                datasets: [
+                  { label: 'Differential Manchester',
+                    data: fdata6,
+                    borderColor: COLOR_5,
+                    backgroundColor: POINT_COLOR_5,
+                    stepped: true}
+                ]
+            }    
             default:
                 console.log('ups...')
                 return;

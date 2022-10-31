@@ -12,9 +12,22 @@ const empty = {
       borderColor: 'rgb(255, 99, 132)',
       backgroundColor: 'rgba(255, 99, 132, 0.5)',
       stepped: true,
-    }
+    },
   ],
-}
+};
+const CLOCK_DATA = {
+  labels: ['', '', '', '', '', '', ''],
+  datasets: [
+    {
+      label: 'clock',
+      data: [0, 1, 0, 1, 0, 1, 0, 1],
+      borderColor: 'rgb(255, 99, 132)',
+      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      stepped: true,
+    },
+  ],
+};
+
 export const Home = () => {
 
   const [mensaje, setMensaje] = useState('')
@@ -79,7 +92,8 @@ export const Home = () => {
           <>
           <h5>Grafico {optionGraph}:</h5>
           <Grafico data={dataGraph}/>
-          <Botonera options={['UNRZ', 'NRZL', 'NRZI', 'RZ', 'Manchester']} state={handleGraph}/>
+         {(optionGraph === 'RZ' || optionGraph === 'Manchester' || optionGraph === 'DManchester') && <Grafico data={CLOCK_DATA}/>}
+          <Botonera options={['UNRZ', 'NRZL', 'NRZI', 'RZ', 'Manchester', 'DManchester']} state={handleGraph}/>
           </>
         }
 
