@@ -10,7 +10,6 @@ import {
     Legend,
   } from 'chart.js';
   import { Line } from 'react-chartjs-2';
-  import faker from 'faker';
 
 
 
@@ -30,20 +29,6 @@ import {
         intersect: false,
         axis: 'x'
     },
-  };
-
-
-   const d = {
-    labels: ['', '', '', '', '', '', ''],
-    datasets: [
-      {
-        label: 'NRZ',
-        data: [0,1,0,-1,0,1,0].map(e => e),
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        stepped: true,
-      }
-    ],
   };
 
 

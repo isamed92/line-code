@@ -56,7 +56,7 @@ export const Home = () => {
   }
 
   return (
-    <div className='container mt-3'>
+    <div className='container my-5'>
        <div className="d-flex justify-content-between">
          <div className="form-check form-switch">
           <input className="form-check-input" type="checkbox" role="switch" id="paridad" onChange={() => setParity(p => !p)} checked={parity}/>
@@ -92,7 +92,12 @@ export const Home = () => {
           <>
           <h5>Grafico {optionGraph}:</h5>
           <Grafico data={dataGraph}/>
-         {(optionGraph === 'RZ' || optionGraph === 'Manchester' || optionGraph === 'DManchester') && <Grafico data={CLOCK_DATA}/>}
+         {(optionGraph === 'RZ' || optionGraph === 'Manchester' || optionGraph === 'DManchester') && 
+         <>
+          <h5>Grafico clock:</h5>
+          <Grafico data={CLOCK_DATA}/>
+         </>
+         }
           <Botonera options={['UNRZ', 'NRZL', 'NRZI', 'RZ', 'Manchester', 'DManchester']} state={handleGraph}/>
           </>
         }
