@@ -2,25 +2,46 @@ import React, { useEffect, useState } from 'react'
 import { useCode } from '../hooks/useCode'
 import { Grafico } from './Grafico'
 
+
+const empty = {
+  labels: ['', '', '', '', '', '', ''],
+  datasets: [
+    {
+      label: 'NRZ',
+      // data: [0,1,0,-1,0,1,0].map(e => e),
+      borderColor: 'rgb(255, 99, 132)',
+      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      stepped: true,
+    }
+  ],
+}
 export const Home = () => {
 
   const [mensaje, setMensaje] = useState('')
   const [bin, setBin] = useState('')
   const [parity, setParity] = useState(false)
   const [sync, setSync] = useState(false)
+  const [optionGraph, setOptionGraph] = useState('')
+  const [dataGraph, setDataGraph] = useState(empty)
 
 
-  const { getBinary } = useCode()
+
+  const { getBinary, getDataGraph} = useCode()
 
   useEffect(() => handleConvert(), [sync])
   
-
+  const handleGraph = (o) => {
+    setOptionGraph(o)
+    const graph = getDataGraph(bin, o)
+    setDataGraph(graph)
+  }
 
   const handleConvert = () => {
     if(mensaje === '') return;
     const data = getBinary(mensaje, parity, sync)
     setBin(data)
   }
+
   return (
     <div className='container mt-3'>
        <div className="d-flex justify-content-between">
@@ -56,9 +77,9 @@ export const Home = () => {
         {
           !sync && 
           <>
-          <h5>Grafico:</h5>
-          <Grafico/>
-          <Botonera options={['NRZ', 'RZ', 'AMI']}/>
+          <h5>Grafico {optionGraph}:</h5>
+          <Grafico data={dataGraph}/>
+          <Botonera options={['UNRZ', 'NRZL', 'NRZI', 'RZ', 'Manchester']} state={handleGraph}/>
           </>
         }
 
@@ -70,23 +91,23 @@ export const Home = () => {
 }
 
 
-const Botonera = ({options}) => {
+const Botonera = ({options, state}) => {
     return (
       <div className='btn-toolbar' role='toolbar'>
         <div className="container mt-2 btn-group" role="group">
             { 
             options.length > 0 &&
-            options.map( (opt, id) => <Option key={id} opt={opt} id={id}/>)
+            options.map( (opt, id) => <Option key={id} opt={opt} id={id} state={state}/>)
           }
         </div>
       </div>
     )
 }
 
-const Option = ({opt, id}) => {
+const Option = ({opt, id, state}) => {
   return (
     <>
-      <input type="radio" className="btn-check" name="btnradio" id={`btnRadio${id}`}/>
+      <input type="radio" className="btn-check" name="btnradio" id={`btnRadio${id}`} onChange={() => state(opt)}/>
       <label key={id}  className="btn btn-outline-primary" htmlFor={`btnRadio${id}`}>{opt}</label>
     </>
   )
