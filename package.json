@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "animate.css": "^4.1.1",
     "bootstrap": "^5.2.2",
     "chart.js": "^3.9.1",
     "faker": "^5.5.3",

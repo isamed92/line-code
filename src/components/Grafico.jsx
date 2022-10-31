@@ -24,7 +24,7 @@ import {
     Legend
   );
 
-  export const options = {
+   const opt = {
     responsive: true,
     interaction: {
         intersect: false,
@@ -32,15 +32,13 @@ import {
     },
   };
 
-  const labels = ['0', '1', '2', '3', '4', '5', '6'];
 
-
-  export const data = {
-    labels,
+   const d = {
+    labels: ['0', '1', '2', '3', '4', '5', '6'],
     datasets: [
       {
         label: 'NRZ',
-        data: labels.map(() => faker.datatype.number({ min: -1, max: 1 })),
+        data: [0,1,0,-1,0,1,0].map(e => e),
         borderColor: 'rgb(255, 99, 132)',
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
         stepped: true,
@@ -49,7 +47,7 @@ import {
   };
 
 
-export const Grafico = () => {
+export const Grafico = ({options=opt, data=d}) => {
   return (
    <Line options={options} data={data}/>
   )
