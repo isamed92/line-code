@@ -1,32 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useForm } from '../hooks';
+import { Line } from 'react-chartjs-2';
+import { useForm, useGraph } from '../hooks';
 import { useModulation } from '../hooks/useModulation';
 import { Grafico } from './Grafico';
-
-const empty = {
-  labels: ['', '', '', '', '', '', ''],
-  datasets: [
-    {
-      label: 'NRZ',
-      // data: [0,1,0,-1,0,1,0].map(e => e),
-      borderColor: 'rgb(255, 99, 132)',
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      stepped: true,
-    },
-  ],
-};
-const CLOCK_DATA = {
-  labels: ['', '', '', '', '', '', ''],
-  datasets: [
-    {
-      label: 'clock',
-      data: [0, 1, 0, 1, 0, 1, 0, 1],
-      borderColor: 'rgb(255, 99, 132)',
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      stepped: true,
-    },
-  ],
-};
+import Plot from 'react-plotly.js';
 
 const formData = {
   carrierAmplitude: '',
@@ -46,6 +23,15 @@ export const Home = () => {
     onInputChange,
   } = useForm(formData);
 
+  const [carrierData, setCarrierData] = useState({})
+  const [asciiData, setAsciiData] = useState({})
+  const [askData, setAskData] = useState({})
+  const [fskData, setFskData] = useState({})
+  const [BPSKData, setBPSKData] = useState({})
+  const [BPSKConstelationData, setBPSKConstelationData] = useState({})
+  const [QPSKData, setQPSKData] = useState({})
+  const [QPSKConstelationData, setQPSKConstelationData] = useState({})
+
   const { desviacionMaximaFrecuencia,
     sensibilidadDesviacion,
     indiceModulacion,
@@ -59,12 +45,44 @@ export const Home = () => {
     cantidadMAriaFSK,
     cantidadMAriaBPSK,
     cantidadMariaQPSK,} = useModulation({carrierAmplitude, carrierFreq, ascii, bitFreq, devSens})
+  
+
+  const { getGraficaPortadora, getASCIIData, getASKData, getFSKData } = useGraph()
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
     if(carrierAmplitude === '' || carrierFreq === '' || ascii === '' || bitFreq === '' || devSens === '') return
     console.log({ carrierAmplitude, carrierFreq, ascii, bitFreq, devSens });
   };
+
+  useEffect(() => {
+    if(carrierAmplitude === '' || carrierFreq === '') return;
+    const {data, layout} = getGraficaPortadora(parseFloat(carrierAmplitude), parseFloat(carrierFreq))
+    setCarrierData({data, layout})
+  }, [carrierAmplitude, carrierFreq])
+  
+  useEffect(() => {
+    if(ascii === '' || bitFreq === '') return;
+    const {data, layout} = getASCIIData(ascii, parseFloat(tiempoBit))
+    setAsciiData({data, layout})
+  }, [ascii, bitFreq])
+  
+  useEffect(() => {
+    if(ascii === '' || carrierAmplitude === '' || carrierFreq === '' || tiempoBit === '') return;
+    const {data, layout} = getASKData(ascii, parseFloat(carrierAmplitude), parseFloat(carrierFreq), parseFloat(tiempoBit))
+    setAskData({data, layout})
+  }, [ascii, carrierAmplitude, carrierFreq, tiempoBit,])
+
+  useEffect(() => {
+    if(ascii === '' || carrierAmplitude === '' || carrierFreq === '' || tiempoBit === ''|| desviacionMaximaFrecuencia === '') return;
+    
+    const {data, layout} = getFSKData(ascii, parseFloat(carrierAmplitude), parseFloat(carrierFreq), parseFloat(tiempoBit), parseFloat(desviacionMaximaFrecuencia))
+    setFskData({data, layout})
+  }, [ascii, carrierAmplitude, carrierFreq, tiempoBit,desviacionMaximaFrecuencia])
+
+
+
   return (
     <div className='container my-5'>
       <form onSubmit={handleSubmit}>
@@ -135,7 +153,6 @@ export const Home = () => {
               </div>
               <div className='mb-3'>
                 <label htmlFor='sensibility' className='form-label'>
-                  {' '}
                   Deviation Sensitivity [HZ]
                 </label>
                 <input
@@ -219,22 +236,22 @@ export const Home = () => {
               </div>
             </div>
             <div className='row'>
-              <div className='col-3'>
+              <div className='col-4'>
                 <h5 className='result-title'>Ancho de banda en QPSK</h5>
                 <p className='result'>B = {anchoBandaQPSK} Hz</p>
                 {/* <div>Formula? </div> */}
               </div>
-              <div className='col-3'>
+              <div className='col-4'>
                 <h5 className='result-title'>cantidad M-aria en FSK</h5>
                 <p className='result'>M = {cantidadMAriaFSK}</p>
                 {/* <div>Formula? </div> */}
               </div>
-              <div className='col-3'>
+              <div className='col-4'>
                 <h5 className='result-title'>cantidad M-aria en BPSK</h5>
                 <p className='result'>M = {cantidadMAriaBPSK}</p>
                 {/* <div>Formula? </div> */}
               </div>
-              <div className='col-3'>
+              <div className='col-4'>
                 <h5 className='result-title'>cantidad M-aria en QPSK</h5>
                 <p className='result'>M = {cantidadMariaQPSK}</p>
                 {/* <div>Formula? </div> */}
@@ -248,17 +265,21 @@ export const Home = () => {
             <div className='row'>
               <div className='col-6'>
                 <h5>Carrier Signal</h5>
+                <Plot data={carrierData.data} layout={carrierData.layout}/>
               </div>
               <div className='col-6'>
                 <h5>ASCII Pulse Diagram</h5>
+                <Plot data={asciiData.data} layout={asciiData.layout}/>
               </div>
             </div>
             <div className='row'>
               <div className='col-6'>
                 <h5>ASK Modulate Signal</h5>
+                <Plot data={askData.data} layout={askData.layout}/>
               </div>
               <div className='col-6'>
                 <h5>FSK Modulate Signal</h5>
+                <Plot data={fskData.data} layout={fskData.layout}/>
               </div>
             </div>
             <div className='row'>

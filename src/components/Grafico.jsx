@@ -32,7 +32,7 @@ import {
   };
 
 
-export const Grafico = ({options=opt, data=d}) => {
+export const Grafico = ({options=opt, data}) => {
   return (
    <Line options={options} data={data}/>
   )
