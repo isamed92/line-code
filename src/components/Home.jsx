@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useCode } from '../hooks/useCode'
+import { useForm } from '../hooks';
 import { Grafico } from './Grafico'
 
 
@@ -28,106 +28,63 @@ const CLOCK_DATA = {
   ],
 };
 
+const formData = {
+  carrierAmplitude: '',
+  carrierFreq: '',
+  ascii: '',
+  bitFreq: '',
+  devSens: '',
+}
+
+
 export const Home = () => {
-
-  const [mensaje, setMensaje] = useState('')
-  const [bin, setBin] = useState('')
-  const [parity, setParity] = useState(false)
-  const [sync, setSync] = useState(false)
-  const [optionGraph, setOptionGraph] = useState('')
-  const [dataGraph, setDataGraph] = useState(empty)
+  const { carrierAmplitude, carrierFreq, ascii, bitFreq, devSens, onInputChange,} = useForm(formData)
 
 
 
-  const { getBinary, getDataGraph} = useCode()
-
-  useEffect(() => handleConvert(), [sync])
-  
-  const handleGraph = (o) => {
-    setOptionGraph(o)
-    const graph = getDataGraph(bin, o)
-    setDataGraph(graph)
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log({carrierAmplitude, carrierFreq, ascii, bitFreq, devSens})
   }
-
-  const handleConvert = () => {
-    if(mensaje === '') return;
-    const data = getBinary(mensaje, parity, sync)
-    setBin(data)
-  }
-
   return (
     <div className='container my-5'>
-       <div className="d-flex justify-content-between">
-         <div className="form-check form-switch">
-          <input className="form-check-input" type="checkbox" role="switch" id="paridad" onChange={() => setParity(p => !p)} checked={parity}/>
-          <label className="form-check-label" htmlFor="paridad">paridad {parity ? 'impar' : 'par'}</label>
-         </div>
-         <div className="form-check form-switch">
-          <input className="form-check-input" type="checkbox" role="switch" id="sync" onChange={() => setSync(p => !p)} checked={sync}/>
-          <label className="form-check-label" htmlFor="sync">transmisión {sync ? 'asincrona' : 'sincrona'} </label>
-         </div>
-       </div>
-        <div className='d-flex justify-content-between my-4'>
-          <div className='input-group w-75'>
-            <input
-              type='text'
-              className='form-control'
-              placeholder='Ingresar un mensaje'
-              onChange={(e) => setMensaje(e.target.value)}
-              value={mensaje}
-            />
-
+      
+      <form onSubmit={handleSubmit}>
+        <div className="container">
+          <div className="row">
+            <div className="col-6">
+              <h4>Carrier Signal:</h4>
+              <hr/>
+              <div className="mb-3">
+                <label htmlFor="carrier-amplitude" className="form-label">Amplitude [V]</label>
+                <input type="number" className="form-control" id="carrier-amplitude" placeholder='Carrier Amplitude [Hz]' onChange={onInputChange} name='carrierAmplitude' value={carrierAmplitude}/>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="carrier-frequency" className="form-label">Frequency [Hz]</label>
+                <input type="number" className="form-control" id="carrier-frequency" placeholder='Carrier Frequency [Hz]' onChange={onInputChange} name='carrierFreq' value={carrierFreq}/>
+              </div>
+            </div>
+            <div className="col-6">
+              <h4>ASCII Data:</h4>
+              <hr/>
+              <div className="mb-3">
+                <label htmlFor="ascii" className="form-label">Character ASCII:</label>
+                <input type="text" className="form-control" id="ascii" placeholder='ASCII' onChange={onInputChange} name='ascii' value={ascii}/>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="bit-freq" className="form-label">bit Frequency [Hz]</label>
+                <input type="number" className="form-control" id="bit-freq" placeholder='bit Frequency [Hz]' onChange={onInputChange} name='bitFreq' value={bitFreq}/>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="sensibility" className="form-label"> Deviation Sensitivity [HZ]</label>
+                <input type="number" className="form-control" id="sensibility" placeholder='Deviation Sensitivity [Hz]' onChange={onInputChange} name='devSens' value={devSens}/>
+              </div>
+            </div>
+            <button type="submit" className="btn btn-primary">Calculate</button>
           </div>
-            <button type="button" className="btn btn-danger" onClick={handleConvert}>Convertir</button>
         </div>
-        { bin !== '' &&
-         <div className='animate__animated animate__fadeIn'>
-           <h5>Binary:</h5>
-           <hr/>
-           <div className='fs-5 text-break alert alert-info'> {bin} </div>
-           <hr/>
-        
-        {
-          !sync && 
-          <>
-          <h5>Grafico {optionGraph}:</h5>
-          <Grafico data={dataGraph}/>
-         {(optionGraph === 'RZ' || optionGraph === 'Manchester' || optionGraph === 'DManchester') && 
-         <>
-          <h5>Grafico clock:</h5>
-          <Grafico data={CLOCK_DATA}/>
-         </>
-         }
-          <Botonera options={['UNRZ', 'NRZL', 'NRZI', 'RZ', 'Manchester', 'DManchester']} state={handleGraph}/>
-          </>
-        }
-
-        </div>
-         }
-
+      </form>
+   
     </div>
-  )
-}
-
-
-const Botonera = ({options, state}) => {
-    return (
-      <div className='btn-toolbar' role='toolbar'>
-        <div className="container mt-2 btn-group" role="group">
-            { 
-            options.length > 0 &&
-            options.map( (opt, id) => <Option key={id} opt={opt} id={id} state={state}/>)
-          }
-        </div>
-      </div>
-    )
-}
-
-const Option = ({opt, id, state}) => {
-  return (
-    <>
-      <input type="radio" className="btn-check" name="btnradio" id={`btnRadio${id}`} onChange={() => state(opt)}/>
-      <label key={id}  className="btn btn-outline-primary" htmlFor={`btnRadio${id}`}>{opt}</label>
-    </>
   )
 }
