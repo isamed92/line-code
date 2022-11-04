@@ -84,7 +84,132 @@ export const Home = () => {
           </div>
         </div>
       </form>
+
+
+      {/* resultados */}
+      <h3 className='mt-5'>Resultados:</h3>
+      <hr/>
+      <div className="container mt-5">
+        <div className="row">
+          <div className="col-4">
+            <h5 className="result-title">Desviación máxima de frecuencia</h5>
+            <p className="result">Δf = 10 Hz</p>
+            {/* <div>Formula? </div> */}
+          </div>
+          <div className="col-4">
+            <h5 className="result-title">Sensibilidad a la desviación</h5>
+            <p className="result">K = 1 Hz</p>
+            {/* <div>Formula? </div> */}
+          </div>
+          <div className="col-4">
+            <h5 className="result-title">Índice de modulación</h5>
+            <p className="result">m = 20</p>
+            {/* <div>Formula? </div> */}
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-4">
+            <h5 className="result-title">Frecuencia de marca</h5>
+            <p className="result">Fm = 1 Hz</p>
+            {/* <div>Formula? </div> */}
+          </div>
+          <div className="col-4">
+            <h5 className="result-title">Frecuencia de espacio</h5>
+            <p className="result">Fs = 3 Hz</p>
+            {/* <div>Formula? </div> */}
+          </div>
+          <div className="col-4">
+            <h5 className="result-title">Tiempo de bit</h5>
+            <p className="result">fb = 1 bps</p>
+            {/* <div>Formula? </div> */}
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-4">
+            <h5 className="result-title">Ancho de banda en ASK</h5>
+            <p className="result">B = 1 Hz</p>
+            {/* <div>Formula? </div> */}
+          </div>
+          <div className="col-4">
+            <h5 className="result-title">Ancho de banda en FSK</h5>
+            <p className="result">B = 22 Hz</p>
+            {/* <div>Formula? </div> */}
+          </div>
+          <div className="col-4">
+            <h5 className="result-title">Ancho de banda en BPSK</h5>
+            <p className="result">B = 1 Hz</p>
+            {/* <div>Formula? </div> */}
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-3">
+            <h5 className="result-title">Ancho de banda en QPSK</h5>
+            <p className="result">B = 0.5 Hz</p>
+            {/* <div>Formula? </div> */}
+          </div>
+          <div className="col-3">
+            <h5 className="result-title">cantidad M-aria en FSK</h5>
+            <p className="result">M = 2</p>
+            {/* <div>Formula? </div> */}
+          </div>
+          <div className="col-3">
+            <h5 className="result-title">cantidad M-aria en BPSK</h5>
+            <p className="result">M = 22</p>
+            {/* <div>Formula? </div> */}
+          </div>
+          <div className="col-3">
+            <h5 className="result-title">cantidad M-aria en QPSK</h5>
+            <p className="result">M = 4</p>
+            {/* <div>Formula? </div> */}
+          </div>
+        </div>
+      </div>
    
+
+      {/* GRAFICOS */}
+
+      <div className="container">
+        <div className="row">
+          <div className="col-6">
+            <h5>Carrier Signal</h5>
+            
+          </div>
+          <div className="col-6">
+            <h5>ASCII Pulse Diagram</h5>
+
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-6">
+            <h5>ASK Modulate Signal</h5>
+
+          </div>
+          <div className="col-6">
+            <h5>FSK Modulate Signal</h5>
+            
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-6">
+            <h5>BPSK Modulate Signal</h5>
+
+          </div>
+          <div className="col-6">
+            <h5>BPSK Constelation</h5>
+
+          </div>
+          </div>
+        <div className="row">
+          <div className="col-6">
+            <h5>QPSK Modulate Signal</h5>
+            
+          </div>
+          <div className="col-6">
+            <h5>QPSK Constelation</h5>
+
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
