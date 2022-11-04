@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Line } from 'react-chartjs-2';
 import { useForm, useGraph } from '../hooks';
 import { useModulation } from '../hooks/useModulation';
-import { Grafico } from './Grafico';
 import Plot from 'react-plotly.js';
 
 const formData = {
@@ -24,6 +22,7 @@ export const Home = () => {
   } = useForm(formData);
 
   const [carrierData, setCarrierData] = useState({})
+  const [bin, setBin] = useState('')
   const [asciiData, setAsciiData] = useState({})
   const [askData, setAskData] = useState({})
   const [fskData, setFskData] = useState({})
@@ -32,22 +31,9 @@ export const Home = () => {
   const [QPSKData, setQPSKData] = useState({})
   const [QPSKConstelationData, setQPSKConstelationData] = useState({})
 
-  const { desviacionMaximaFrecuencia,
-    sensibilidadDesviacion,
-    indiceModulacion,
-    frecuenciaMarca,
-    frecuenciaEspacio,
-    tiempoBit,
-    anchoBandaASK,
-    anchoBandaFSK, 
-    anchoBandaBPSK,
-    anchoBandaQPSK, 
-    cantidadMAriaFSK,
-    cantidadMAriaBPSK,
-    cantidadMariaQPSK,} = useModulation({carrierAmplitude, carrierFreq, ascii, bitFreq, devSens})
+  const { desviacionMaximaFrecuencia, sensibilidadDesviacion, indiceModulacion, frecuenciaMarca, frecuenciaEspacio, tiempoBit, anchoBandaASK, anchoBandaFSK,  anchoBandaBPSK, anchoBandaQPSK,  cantidadMAriaFSK, cantidadMAriaBPSK, cantidadMariaQPSK,} = useModulation({carrierAmplitude, carrierFreq, ascii, bitFreq, devSens})
   
-
-  const { getGraficaPortadora, getASCIIData, getASKData, getFSKData } = useGraph()
+  const { getGraficaPortadora, getASCIIData, getASKData, getFSKData, getBPSKData, getBPSKConstelationData, getQPSKData, getQPSKConstelationData, getValoresASCII  } = useGraph()
 
 
   const handleSubmit = (event) => {
@@ -63,10 +49,10 @@ export const Home = () => {
   }, [carrierAmplitude, carrierFreq])
   
   useEffect(() => {
-    if(ascii === '' || bitFreq === '') return;
+    if(ascii === '' || tiempoBit === '') return;
     const {data, layout} = getASCIIData(ascii, parseFloat(tiempoBit))
     setAsciiData({data, layout})
-  }, [ascii, bitFreq])
+  }, [ascii, tiempoBit])
   
   useEffect(() => {
     if(ascii === '' || carrierAmplitude === '' || carrierFreq === '' || tiempoBit === '') return;
@@ -80,6 +66,40 @@ export const Home = () => {
     const {data, layout} = getFSKData(ascii, parseFloat(carrierAmplitude), parseFloat(carrierFreq), parseFloat(tiempoBit), parseFloat(desviacionMaximaFrecuencia))
     setFskData({data, layout})
   }, [ascii, carrierAmplitude, carrierFreq, tiempoBit,desviacionMaximaFrecuencia])
+  
+  useEffect(() => {
+    if(ascii === '' || carrierFreq === '' || tiempoBit === '') return;
+    
+    const {data, layout} = getBPSKData(ascii, parseFloat(tiempoBit), parseFloat(carrierFreq))
+    setBPSKData({data, layout})
+  }, [ascii, carrierFreq, tiempoBit])
+
+  useEffect(() => {
+    if(ascii === '' || tiempoBit === '') return;
+    
+    const {data, layout} = getBPSKConstelationData(ascii, parseFloat(tiempoBit))
+    setBPSKConstelationData({data, layout})
+  }, [ascii, tiempoBit])
+
+  useEffect(() => {
+    if(ascii === '' || carrierFreq === ''|| tiempoBit === '') return;
+    
+    const {data, layout} = getQPSKData(ascii, parseFloat(carrierFreq),parseFloat(tiempoBit))
+    setQPSKData({data, layout})
+  }, [ascii, carrierFreq, tiempoBit])
+
+  useEffect(() => {
+    if(ascii === '' || tiempoBit === '') return;
+    
+    const {data, layout} = getQPSKConstelationData(ascii, parseFloat(tiempoBit))
+    setQPSKConstelationData({data, layout})
+  }, [ascii, tiempoBit])
+
+  useEffect(() => {
+    if(ascii === '') return;
+    const binario = getValoresASCII(ascii)[0].binario
+    setBin(binario)
+  }, [ascii])
 
 
 
@@ -179,7 +199,7 @@ export const Home = () => {
       devSens > 0) && (
         <div className='container'>
           {/* resultados */}
-          <h3 className='mt-5'>Resultados:</h3>
+          <h3 className='mt-5'>Resultados: {bin}</h3>
           <hr />
           <div className='container mt-5'>
             <div className='row'>
@@ -264,38 +284,34 @@ export const Home = () => {
           <div className='container'>
             <div className='row'>
               <div className='col-6'>
-                <h5>Carrier Signal</h5>
                 <Plot data={carrierData.data} layout={carrierData.layout}/>
               </div>
               <div className='col-6'>
-                <h5>ASCII Pulse Diagram</h5>
                 <Plot data={asciiData.data} layout={asciiData.layout}/>
               </div>
             </div>
             <div className='row'>
               <div className='col-6'>
-                <h5>ASK Modulate Signal</h5>
                 <Plot data={askData.data} layout={askData.layout}/>
               </div>
               <div className='col-6'>
-                <h5>FSK Modulate Signal</h5>
                 <Plot data={fskData.data} layout={fskData.layout}/>
               </div>
             </div>
             <div className='row'>
               <div className='col-6'>
-                <h5>BPSK Modulate Signal</h5>
+                <Plot data={BPSKData.data} layout={BPSKData.layout}/>
               </div>
               <div className='col-6'>
-                <h5>BPSK Constelation</h5>
+                <Plot data={BPSKConstelationData.data} layout={BPSKConstelationData.layout}/>
               </div>
             </div>
             <div className='row'>
               <div className='col-6'>
-                <h5>QPSK Modulate Signal</h5>
+                <Plot data={QPSKData.data} layout={QPSKData.layout}/>
               </div>
               <div className='col-6'>
-                <h5>QPSK Constelation</h5>
+                <Plot data={QPSKConstelationData.data} layout={QPSKConstelationData.layout}/>
               </div>
             </div>
           </div>
